@@ -1,0 +1,48 @@
+<link rel="import" href="../components/polymer/polymer.html">
+<link rel="import" href="../components/iron-ajax/iron-ajax.html">
+<link rel="import" href="post-card.html">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<dom-module id="post-list">
+  <template>
+    <style>
+    </style>
+
+<iron-ajax
+    auto
+    url="../api/posts.json"
+    handle-as="json"
+    on-response="handleResponse">
+</iron-ajax>  
+    <div id="cards"></div>
+</template>
+  <script>
+  Polymer({
+    is: 'post-list',
+    created: function() {
+      this.posts = [];
+    },
+    s: "",
+    handleResponse: function(r) {
+    this.posts = r.detail.response;
+    x = 0
+    y = 0
+    for(i=0; i < this.posts.length; i++) {
+    x += 200;
+    if (i % 3 == 0 ) {
+      if (i == 0) {
+        x = 0
+      }
+      else {
+        x = 0;
+        y += 300;
+      }
+    }
+    this.s += '<div id="card" class="card" style="left: ' + x + 'px; top: '+ y +'px; position: absolute;"><post-card><img src="' + this.posts[i].avatar + '" width="70" height="70"> <h2>' + this.posts[i].username + '</h2><p>' + this.posts[i].text + '</p></post-card></div>'
+   }
+   html = $.parseHTML( this.s )
+   for (i =0; i < html.length; i++)
+     Polymer.dom(this.$.cards).appendChild(html[i])
+  },
+  });
+  </script>
+</dom-module>
